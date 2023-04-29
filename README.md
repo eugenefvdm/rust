@@ -1,6 +1,8 @@
 # Rust
 A couple of introductory Rust examples
 
+![Tests](https://github.com/eugenevdm/rust/workflows/rust/badge.svg)
+
 ## About
 
 This is a demo application to showcase various Rust features.
