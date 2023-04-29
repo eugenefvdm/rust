@@ -3,6 +3,8 @@ A couple of introductory Rust examples
 
 [![Rust build](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
+
+
 ## About
 
 This is a demo application to showcase various Rust features.
