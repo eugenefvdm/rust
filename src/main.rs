@@ -3,12 +3,30 @@ extern crate cairo;
 use cairo::{Context, Format, ImageSurface}; // Import the Cairo library for line drawing on a surface
 use std::fs::File; // Import the File library for writing to a file
 use std::io; // Import the IO library for reading and writing to the console
+use std::io::Write; // For writing to a file
+use std::fs; // Used to read a file
+use std::fs::{OpenOptions}; // Used by file search and replace
+use std::io::{BufRead, BufReader}; // Also used by file search and replace
 
 /*  
     Main entry point into the application.
 */
-fn main() {
+fn main() -> io::Result<()>{
     println!("Hello, world!");
+
+    write_text_file();
+
+    print_file_contents("vhost.conf")?;
+    
+    wait();
+
+    let search = "129.232.252.163";
+    let replace = "1.1.1.1";
+    let filename = "vhost.conf";
+
+    replace_file_content(search, replace, filename);
+
+    print_file_contents("vhost.conf")?;
 
     line();
 
@@ -23,17 +41,74 @@ fn main() {
     wait();
 
     menu();
+
+    Ok(()) // Return value required by main function
     
 }
 
-/* 
-    Sine Consine example    
+fn replace_file_content(search: &str, replace: &str, filename: &str)  {
+    let file = File::open(filename).expect("Could not open file");
+    let reader = BufReader::new(file);
+    let mut lines = reader.lines();
 
-    Constants for the width and height of the canvas.
+    let mut new_content = String::new();
 
-    These are used to create a 2D array of characters to represent the canvas.
-    The canvas is then printed to the console.
-*/
+    while let Some(line) = lines.next() {
+        let line = line.unwrap();
+        let new_line = line.replace(search, replace);
+        new_content.push_str(&new_line);
+        new_content.push('\n');
+    }
+
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(filename)
+        .expect("Could not open file for writing");
+
+    file.write_all(new_content.as_bytes())
+        .expect("Could not write to file");
+}
+
+fn write_text_file() {
+    let mut file = File::create("vhost.conf").unwrap();
+
+    let indentation = "    "; // 4 spaces
+
+    write!(file, "<VirtualHost 129.232.252.163:80>\n").unwrap();
+    write!(file, "{}SuexecUserGroup \"#1356\" \"#1056\"\n", indentation).unwrap();
+    write!(file, "{}ServerName example.com\n", indentation).unwrap();
+    write!(file, "{}ServerAlias www.example.com\n", indentation).unwrap();
+    write!(file, "{}ServerAlias webmail.example.com\n", indentation).unwrap();  
+}
+
+fn print_file_contents(filename: &str) -> io::Result<()> {
+    let content = fs::read_to_string(filename)?;
+
+    println!("{}", content);
+
+    Ok(())
+}
+
+fn line() {
+    let surface_width = 300;
+    let surface_height = 200;
+
+    let surface = ImageSurface::create(Format::ARgb32, surface_width, surface_height).unwrap();
+    let context = Context::new(&surface);
+
+    context.set_line_width(10.0);
+    context.move_to(0.0, surface_height as f64 / 2.0);
+    context.line_to(surface_width as f64, surface_height as f64 / 2.0);
+    context.stroke();
+
+    let mut file = File::create("line.png").unwrap();
+    surface.write_to_png(&mut file).unwrap();
+
+    println!("A file line.png has been created.");
+}
+
+// Sine Consine example variables    
 const WIDTH: i32 = 100;
 const HEIGHT: i32 = 50;
 
@@ -55,26 +130,10 @@ fn sine_cosine() {
     }
 }
 
-fn line() {
-    let surface_width = 300;
-    let surface_height = 200;
 
-    let surface = ImageSurface::create(Format::ARgb32, surface_width, surface_height).unwrap();
-    let context = Context::new(&surface);
-
-    context.set_line_width(10.0);
-    context.move_to(0.0, surface_height as f64 / 2.0);
-    context.line_to(surface_width as f64, surface_height as f64 / 2.0);
-    context.stroke();
-
-    let mut file = File::create("line.png").unwrap();
-    surface.write_to_png(&mut file).unwrap();
-
-    println!("A file line.png has been created.");
-}
 
 fn menu() {
-    let menu_items = vec!["Option 1", "Option 2", "Option 3", "Quit"];
+    let menu_items = vec!["Option 1", "Option 2", "Option 3", "Quit (q)"];
     let mut selected_item = 0;
 
     loop {
