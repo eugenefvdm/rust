@@ -4,16 +4,8 @@ use cairo::{Context, Format, ImageSurface}; // Import the Cairo library for line
 use std::fs::File; // Import the File library for writing to a file
 use std::io; // Import the IO library for reading and writing to the console
 
-
 /*  
     Main entry point into the application.
-
-    This is a demo application to showcase various Rust features.
-
-    - Print Hello World
-    - Create a line on a surface and save it to a file using the Cairo library
-    - Draw some text characters using SINE and COSINE functions
-    - Create a menu and handle keyboard input
 */
 fn main() {
     println!("Hello, world!");
