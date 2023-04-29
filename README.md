@@ -1,7 +1,7 @@
 # Rust
 A couple of introductory Rust examples
 
-![Tests](https://github.com/eugenevdm/rust/workflows/rust/badge.svg)
+[![Rust](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
 ## About
 
