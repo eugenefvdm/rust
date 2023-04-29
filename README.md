@@ -1,7 +1,7 @@
 # Rust
 A couple of introductory Rust examples
 
-[![Rust](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
+[![Rust build](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
 ## About
 
@@ -16,3 +16,6 @@ This is a demo application to showcase various Rust features.
 
 `cargo build;./target/debug/hello_world_rust`
 
+## Testing
+
+`cargo test`
