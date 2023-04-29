@@ -15,10 +15,15 @@ This is a demo application to showcase various Rust features.
 - Draw some text characters using SINE and COSINE functions
 - Create a menu and handle keyboard input
 - Extremely rudimentary test based on output from ChatGPT
+- Sprite (from https://github.com/PistonDevelopers/piston-examples)
 
 ## Running
 
 `cargo build;./target/debug/hello_world_rust`
+
+### Sprite
+
+`cargo run --example sprite`
 
 ## Testing
 

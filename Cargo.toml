@@ -6,7 +6,16 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# cairo-rs for line drawing example
+
 [dependencies]
 png = "0.11.0"
-#cairo = "0.0.4"
+# Line drawing example
 cairo-rs = { version = "0.2.0", features = ["png"] }
+# Sprite example
+piston_window = "0.128.0"
+gfx_device_gl = "0.16.2"
+find_folder = "0.3.0"
+piston-ai_behavior = "0.33.0"
+piston2d-sprite = "0.67.0"
+# End Sprite example
