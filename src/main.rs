@@ -16,17 +16,17 @@ fn main() -> io::Result<()>{
 
     write_text_file();
 
-    print_file_contents("vhost.conf")?;
+    print_file_contents("vhost.example.conf")?;
     
     wait();
 
     let search = "129.232.252.163";
     let replace = "1.1.1.1";
-    let filename = "vhost.conf";
+    let filename = "vhost.example.conf";
 
     replace_file_content(search, replace, filename);
 
-    print_file_contents("vhost.conf")?;
+    print_file_contents("vhost.example.conf")?;
 
     line();
 
@@ -71,7 +71,7 @@ fn replace_file_content(search: &str, replace: &str, filename: &str)  {
 }
 
 fn write_text_file() {
-    let mut file = File::create("vhost.conf").unwrap();
+    let mut file = File::create("vhost.example.conf").unwrap();
 
     let indentation = "    "; // 4 spaces
 
