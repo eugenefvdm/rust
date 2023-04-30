@@ -31,3 +31,6 @@ dotenv = "*"
 reqwest = { version = "0.11.5", features = ["blocking", "json"] }
 # For async calls from Main
 tokio = { version = "1.14.0", features = ["full"] }
+# Mocking of API
+serde_json = "1.0.64"
+

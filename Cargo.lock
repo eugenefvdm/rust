@@ -1164,6 +1164,7 @@ dependencies = [
  "png 0.11.0",
  "regex",
  "reqwest",
+ "serde_json",
  "systemd",
  "tokio",
 ]
