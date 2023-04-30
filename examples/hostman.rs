@@ -97,10 +97,8 @@ fn ping(ip_address: String) {
         let time_index = output_str.find("rtt min/avg/max/mdev = ").unwrap() + 24;
         let time_str = &output_str[time_index + 5..time_index + 10];
         let time_ms = time_str.parse::<f32>().unwrap();
-
-        // Output the average time in milliseconds
-        // println!("Average ping time for {}: {} ms", ip_address, time_str);
-        println!("Average ping time for {}: {} ms", ip_address, time_ms);
+        
+        println!("Average ping time for {} = {} ms", ip_address, time_ms);
     }
 }
 
