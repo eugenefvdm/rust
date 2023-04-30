@@ -62,8 +62,8 @@ cargo run --example search_email <server> <email>
 
 ### Sprite Demo
 
-A sprite animation example from PistonDevelopers.
-(https://github.com/PistonDevelopers/piston-examples)
+A sprite animation [example](https://github.com/PistonDevelopers/piston-examples) from PistonDevelopers.
+
 
 #### Running the Sprite demo
 
