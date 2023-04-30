@@ -14,6 +14,18 @@ use std::path::Path;
 use std::process::Command;
 use regex::Regex;
 
+fn convert_bytes(bytes: u64) -> String {
+    if bytes < 1024 {
+        format!("{}B", bytes)
+    } else if bytes < 1024 * 1024 {
+        format!("{:.1}K", bytes as f64 / 1024.0)
+    } else if bytes < 1024 * 1024 * 1024 {
+        format!("{:.1}M", bytes as f64 / (1024.0 * 1024.0))
+    } else {
+        format!("{:.1}G", bytes as f64 / (1024.0 * 1024.0 * 1024.0))
+    }
+}
+
 fn directory_listing() {
     let output = Command::new("ls")
                     .arg("-lah")
@@ -21,6 +33,18 @@ fn directory_listing() {
                      .expect("Failed to execute command");
 
     println!("Directory listing Output:\n{}", String::from_utf8_lossy(&output.stdout));
+}
+
+fn disk_space()  {    
+    let path = "/";
+    
+    let total_space = total_space(path).unwrap();
+    let free_space = free_space(path).unwrap();
+    let used_space = total_space - free_space;
+
+    println!("SIZE:      {} bytes", convert_bytes(total_space));
+    println!("USED:      {} bytes", convert_bytes(used_space));    
+    println!("AVAILABLE: {} bytes", convert_bytes(free_space));    
 }
 
 fn draw_line_on_surface() {
@@ -35,16 +59,16 @@ fn draw_line_on_surface() {
     context.line_to(surface_width as f64, surface_height as f64 / 2.0);
     context.stroke();
 
-    let mut file = File::create("line.png").unwrap();
+    let mut file = File::create("assets/line_on_surface.png").unwrap();
     surface.write_to_png(&mut file).unwrap();
 
-    println!("A file line.png has been created.");
+    println!("A file assets/line_on_surface.png has been created.");
 }
 
 /*
     Good example of a recursive function that calls itself
  */
-fn get_directory_size(path: &Path) -> std::io::Result<u64> {
+fn directory_size(path: &Path) -> std::io::Result<u64> {
     let mut size = 0;
     for entry in fs::read_dir(path)? {
         let entry = entry?;
@@ -53,23 +77,11 @@ fn get_directory_size(path: &Path) -> std::io::Result<u64> {
         if entry_path.is_file() {
             size += entry.metadata()?.len();
         } else {
-            size += get_directory_size(&entry_path)?;
+            size += directory_size(&entry_path)?;
         }
     }
 
     Ok(size)
-}
-
-fn get_total_disk_size()  {    
-    let path = "/home/eugene/code/hello_world_rust";
-    
-    let total_space = total_space(path).unwrap();
-    let free_space = free_space(path).unwrap();
-    let used_space = total_space - free_space;
-
-    println!("Total space: {} bytes", total_space);
-    println!("Free space: {} bytes", free_space);
-    println!("Used space: {} bytes", used_space);
 }
 
 fn linux_service_restart() {
@@ -203,7 +215,7 @@ fn print_file_contents(filename: &str) -> io::Result<()> {
 fn read_disk_space(path: &str) -> std::io::Result<u64> {
     let path = Path::new(path);
 
-    let size = get_directory_size(path).unwrap();
+    let size = directory_size(path).unwrap();
 
     //println!("Size of {:?}: {} bytes", path, size);
 
@@ -257,7 +269,7 @@ fn sine_cosine() {
 }
 
 fn text_file_creation() {
-    let mut file = File::create("vhost.example.conf").unwrap();
+    let mut file = File::create("assets/vhost.example.conf").unwrap();
 
     let indentation = "    "; // 4 spaces
 
@@ -269,7 +281,7 @@ fn text_file_creation() {
 }
 
 fn wait() {
-    println!("Press enter to continue...");
+    println!("\nPress enter to continue...\n");
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 }
@@ -279,6 +291,10 @@ fn wait() {
 */
 fn main() -> io::Result<()>{
     println!("Hello, world!");
+
+    disk_space();
+    println!("This is your disk size ^^^");    
+    wait();
 
     let result = mysql_read_users_table();
     assert!(result.is_ok());
@@ -290,27 +306,24 @@ fn main() -> io::Result<()>{
     wait();
 
     directory_listing();
-    println!("Here is `ls -la` output ^^^");
+    println!("Here is `ls -la` output ^^^\n");
         
-    println!("Next going to output the size of a directory:");  
+    println!("Next we're going to output the size of a directory:");  
     let path = "/home/eugene/code/hello_world_rust/assets";
     let result = read_disk_space(path);    
     println!("Size of {:?} is {} bytes", path, result.unwrap());    
     wait();    
-
-    get_total_disk_size();
+    
     text_file_creation();
             
     let search = "129.232.252.163";
     let replace = "1.1.1.1";
-    let filename = "vhost.example.conf";
-
+    let filename = "assets/vhost.example.conf";
     replace_file_content(search, replace, filename);
-    print_file_contents("vhost.example.conf")?;
-    println!("A file was created and then search and replace took place ^^^");
+    print_file_contents(filename)?;
+    println!("A file was created and then search and replace took place ^^^\n");
 
     draw_line_on_surface();    
-
     wait();
 
     sine_cosine();    
