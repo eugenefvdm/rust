@@ -12,9 +12,20 @@ A few applications that showcases various Rust features.
 For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
 `sudo apt-get install libsystemd-dev`
 
+### Host Manager Demo
+
+A collection of command line network utilities.
+
+```bash
+cargo run --example hostman fail2ban <server> <ip_address>
+cargo run --example hostman hostname
+cargo run --example hostman ping 1.1.1.1
+cargo run --example search_email <server> <email>
+```
+
 ### Main Demo
 
-- Prints Hello World
+- Prints Hello, world!
 - Reads a `MySQL` table called `users`
 - Gets nginx service status
 - Prints a directory listing
@@ -47,17 +58,6 @@ or
 ```bash
 cargo build --release
 ./target/release/hello_world_rust
-```
-
-### Host Manager Demo
-
-A collection of command line network utilities.
-
-```bash
-cargo run --example hostman fail2ban <server> <ip_address>
-cargo run --example hostman hostname
-cargo run --example hostman ping 1.1.1.1
-cargo run --example search_email <server> <email>
 ```
 
 ### Sprite Demo
