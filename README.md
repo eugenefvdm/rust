@@ -3,7 +3,7 @@
 
 ## About
 
-A few applications that showcase various Rust features.
+A showcase of Rust features.
 
 ### Host Manager Demo
 
@@ -13,7 +13,7 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 cargo run --example hostman hostname
 cargo run --example hostman ping 1.1.1.1
-cargo run --example search_email <server> <email>
+cargo run --example hostman search_email <server> <email>
 ```
 
 ### Main Demo
@@ -57,13 +57,11 @@ cargo build --release
 
 A sprite animation [example](https://github.com/PistonDevelopers/piston-examples) from PistonDevelopers.
 
-
 #### Running the Sprite demo
 
 ```bash
 cargo run --example sprite
 ```
-
 ## Installation
 
 For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
@@ -71,7 +69,6 @@ For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to wo
 ```bash
 sudo apt-get install libsystemd-dev
 ```
-
 ## Testing
 
 ```bash
