@@ -67,7 +67,10 @@ cargo run --example sprite
 ## Installation
 
 For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
-`sudo apt-get install libsystemd-dev`
+
+```bash
+sudo apt-get install libsystemd-dev
+```
 
 ## Testing
 
