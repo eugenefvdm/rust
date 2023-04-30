@@ -1,16 +1,9 @@
 # Rust Demos
-An introduction to Rust.
-
 [![Rust build](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
 ## About
 
-A few applications that showcases various Rust features.
-
-## Installation
-
-For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
-`sudo apt-get install libsystemd-dev`
+A few applications that showcase various Rust features.
 
 ### Host Manager Demo
 
@@ -70,6 +63,11 @@ A sprite animation [example](https://github.com/PistonDevelopers/piston-examples
 ```bash
 cargo run --example sprite
 ```
+
+## Installation
+
+For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
+`sudo apt-get install libsystemd-dev`
 
 ## Testing
 
