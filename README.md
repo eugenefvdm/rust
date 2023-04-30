@@ -62,6 +62,19 @@ A sprite animation [example](https://github.com/PistonDevelopers/piston-examples
 ```bash
 cargo run --example sprite
 ```
+
+### WHMCS Demo
+
+An example of calling an API and retrieving values. Showcases async calls and reading from an environment file.
+
+#### Setting up the WHMCS Demo
+
+Copy `.env.example` to `.env` and make sure you have filled in the requisite values for `WHMCS_URL`, `WHMCS_IDENTIFIER`, and `WHMCS_SECRET`.
+
+```bash
+cargo run --example sprite
+```
+
 ## Installation
 
 For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:

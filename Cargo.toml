@@ -26,3 +26,8 @@ systemd = "0.10"
 regex = "1.5.4"
 # You can also do this:
 mysql = "*"
+dotenv = "*"
+# For API calls:
+reqwest = { version = "0.11.5", features = ["blocking", "json"] }
+# For async calls from Main
+tokio = { version = "1.14.0", features = ["full"] }
