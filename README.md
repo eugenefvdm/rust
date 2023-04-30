@@ -1,11 +1,11 @@
-# Rust Demo Applications
+# Rust Demos
 An introduction to Rust.
 
 [![Rust build](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
 ## About
 
-Demo applications that showcases various Rust features.
+A few applications that showcases various Rust features.
 
 ## Installation
 
@@ -51,7 +51,7 @@ cargo build --release
 
 ### Host Manager Demo
 
-_A collection of command line network utilities._
+A collection of command line network utilities.
 
 ```bash
 cargo run --example hostman fail2ban <server> <ip_address>
@@ -67,8 +67,12 @@ A sprite animation example from PistonDevelopers.
 
 #### Running the Sprite demo
 
-`cargo run --example sprite`
+```bash
+cargo run --example sprite
+```
 
 ## Testing
 
-`cargo test`
+```bash
+cargo test
+```
