@@ -51,7 +51,7 @@ cargo build --release
 
 ### Host Manager Demo
 
-The host manager demo is a collection of command line network utilities. Examples:
+_A collection of command line network utilities._
 
 ```bash
 cargo run --example hostman hostname
