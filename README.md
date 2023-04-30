@@ -12,7 +12,7 @@ Demo applications that showcases various Rust features.
 For the [Systemd](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
 `sudo apt-get install libsystemd-dev`
 
-### Main Showcase
+### Main Demo
 
 - Prints Hello World
 - Reads a `MySQL` table called `users`
@@ -49,7 +49,16 @@ cargo build --release
 ./target/release/hello_world_rust
 ```
 
-### Running the Sprite Demo
+### Host Manager Demo
+
+The host manager demo is a collection of command line network utilities. Examples:
+
+```bash
+cargo run --example hostman hostname
+cargo run --example hostman ping 1.1.1.1
+```
+
+### Sprite Demo
 
 This demo is in the examples directory.
 
