@@ -54,15 +54,17 @@ cargo build --release
 _A collection of command line network utilities._
 
 ```bash
+cargo run --example hostman fail2ban <server> <ip_address>
 cargo run --example hostman hostname
 cargo run --example hostman ping 1.1.1.1
+cargo run --example search_email <server> <email>
 ```
 
 ### Sprite Demo
 
-This demo is in the examples directory.
+Some sprite animations from PistonDevelopers.
 
-- Sprite (from https://github.com/PistonDevelopers/piston-examples)
+(from https://github.com/PistonDevelopers/piston-examples)
 
 #### Running the Sprite demo
 
