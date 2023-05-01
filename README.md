@@ -23,9 +23,7 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-Check if an IP address has been listed by Fail2ban on a server.
-
-Output:
+Check if an IP address has been listed by Fail2ban on a server. Output:
 
 ```bash
 IP address A.B.C.D was banned at 2023-05-01 13:47:26
@@ -37,7 +35,11 @@ IP address A.B.C.D was banned at 2023-05-01 13:47:26
 cargo run --example hostman hostname
 ```
 
-Output the current hostname.
+Output the current hostname in fully qualified domain name format. Output:
+
+```bash
+user-laptop.example.com
+```
 
 #### process_list
 
@@ -45,7 +47,11 @@ Output the current hostname.
 cargo run -- process_list <host> [port] [username]
 ```
 
-Show then number of processes running on a remote server.
+Show then number of processes running on a remote server. Output:
+
+```bash
+1256 processes running.
+```
 
 #### ping
 
@@ -53,7 +59,17 @@ Show then number of processes running on a remote server.
 cargo run --example hostman ping 1.1.1.1
 ```
 
-Continiously ping a remote host with 2 counts and show the average time taken to reply.
+Continiously ping a remote host with 2 counts and show the average time taken to reply. Output:
+
+```bash
+Average ping time for 1.1.1.1 = 4.738 ms
+Average ping time for 1.1.1.1 = 3.075 ms
+Average ping time for 1.1.1.1 = 3.373 ms
+Average ping time for 1.1.1.1 = 4.863 ms
+^C
+```
+
+Note: Press control-C to sto.
 
 #### search_email
 
