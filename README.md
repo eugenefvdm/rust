@@ -60,7 +60,7 @@ cargo run --example hostman search_email <server> <email>
 ### Main Demo
 
 - Prints Hello, world!
-- Prints a pretty table using []`prettytable`](https://github.com/phsym/prettytable-rs)
+- Prints a pretty table using [`prettytable`](https://github.com/phsym/prettytable-rs)
 - Reads a [`MySQL`](https://en.wikipedia.org/wiki/MySQL) table called `users`
 - Gets [`nginx`](https://en.wikipedia.org/wiki/Nginx) service status
 - Prints a directory listing
