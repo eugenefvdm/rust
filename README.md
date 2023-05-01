@@ -23,7 +23,7 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-- Check if an IP address has been listed by Fail2ban on a server. Store the result in the history.db file.
+- Check if an IP address has been listed by Fail2ban on a server.
 
 #### hostname
 
@@ -39,7 +39,7 @@ cargo run --example hostman hostname
 cargo run -- process_list <host> [port] [username]
 ```
 
-- Show then number of processes running on a remote server. Store the result in the history.db file.
+- Show then number of processes running on a remote server.
 
 #### ping
 
