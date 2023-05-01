@@ -9,11 +9,11 @@ A showcase of Rust features.
 
 A collection of command line network utilities.
 
-- fail2ban*
-- hostname
-- process_list*
-- ping
-- search_email
+[fail2ban*](#fail2ban)
+[hostname](#hostname)
+[process_list](#process_list)
+[ping](#ping)
+[search_email](#search_email)
 
 **These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 
