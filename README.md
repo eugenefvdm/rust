@@ -23,7 +23,7 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-- Check if an IP address has been listed by Fail2ban on a server.
+Check if an IP address has been listed by Fail2ban on a server.
 
 #### hostname
 
@@ -31,7 +31,7 @@ cargo run --example hostman fail2ban <server> <ip_address>
 cargo run --example hostman hostname
 ```
 
-- Output the current hostname.
+Output the current hostname.
 
 #### process_list
 
@@ -39,7 +39,7 @@ cargo run --example hostman hostname
 cargo run -- process_list <host> [port] [username]
 ```
 
-- Show then number of processes running on a remote server.
+Show then number of processes running on a remote server.
 
 #### ping
 
@@ -47,7 +47,7 @@ cargo run -- process_list <host> [port] [username]
 cargo run --example hostman ping 1.1.1.1
 ```
 
-- Continiously ping a remote host with 2 counts and show the average time taken to reply.
+Continiously ping a remote host with 2 counts and show the average time taken to reply.
 
 #### search_email
 
@@ -55,7 +55,7 @@ cargo run --example hostman ping 1.1.1.1
 cargo run --example hostman search_email <server> <email>
 ```
 
-- Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
+Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
 
 ### Main Demo
 
@@ -70,7 +70,7 @@ cargo run --example hostman search_email <server> <email>
 - Read a text file from disk
 - Find and replace text in a text file on disk
 - Draw a line on a surface and save it to a file using the Cairo library
-- Draw some text characters using [sine and cosine](https://en.wikipedia.org/wiki/Sine_and_cosine) functions
+- Draw some text characters using [`sine and cosine`](https://en.wikipedia.org/wiki/Sine_and_cosine) functions
 - Use [`Systemd`](https://https://en.wikipedia.org/wiki/Systemd) to restart a Linux service
 - Create a console menu and handle keyboard input
 - A rudimentary unit test
