@@ -7,40 +7,55 @@ A demo showcase of some of Rust's features.
 
 ### Host Manager Demo
 
-A collection of command line network utilities.<br><br>
-When the utilities are run, the command and thee output is stored in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database*.
+A collection of command line network utilities.
 
-* Only applicable for `fail2ban` and `process_list`.
+- fail2ban*
+- hostname
+- process_list*
+- ping
+- search_email
 
-- Check if an IP address has been listed by Fail2ban on a server. Store the result in the history.db file.
+* These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.
+
+#### fail2ban
 
 ```bash
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-- Output the current hostname.
+- Check if an IP address has been listed by Fail2ban on a server. Store the result in the history.db file.
+
+#### hostname
 
 ```bash
 cargo run --example hostman hostname
 ```
 
-- Show then number of processes running on a remote server. Store the result in the history.db file.
+- Output the current hostname.
+
+#### process_list
 
 ```bash
 cargo run -- process_list <host> [port] [username]
 ```
 
-- Continiously ping a remote host with 2 counts and show the average time taken to reply.
+- Show then number of processes running on a remote server. Store the result in the history.db file.
+
+#### ping
 
 ```bash
 cargo run --example hostman ping 1.1.1.1
 ```
 
-- Search a server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
+- Continiously ping a remote host with 2 counts and show the average time taken to reply.
+
+#### search_email
 
 ```bash
 cargo run --example hostman search_email <server> <email>
 ```
+
+- Search a server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
 
 ### Main Demo
 
