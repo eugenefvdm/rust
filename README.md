@@ -11,7 +11,7 @@ A collection of command line network utilities.
 
 - [fail2ban*](#fail2ban)
 - [hostname](#hostname)
-- [process_list](#process_list)
+- [process_list*](#process_list)
 - [ping](#ping)
 - [search_email](#search_email)
 

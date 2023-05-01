@@ -84,14 +84,14 @@ fn fail2ban(server: String, ip_address: String) {
     let result: String;
     
     // Search for the pattern in the output
-    if let Some(index) = output_string.find(&format!("] Ban {}", ip_address)) {
-        // Extract the time from the log file
+    if let Some(_index) = output_string.find(&format!("] Ban {}", ip_address)) {
+        // Extract the time from the log file characters 0 through 19
         let time = &output_string[0..19];
-        result = format!("Time of ban: {} #{}", time, index);
-        println!("Time of ban: {} #{}", time, index);
+        result = format!("IP address {} was banned at {}", ip_address, time);
+        println!("{}", result);
     } else {
         result = String::from("Pattern not found");
-        println!("Pattern not found");
+        println!("{}", result);
     }
 
     let command = format!("fail2ban=>{}=>{}", server, ip_address);
