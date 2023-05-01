@@ -3,9 +3,9 @@
 
 ## About
 
-A demo showcase of some of Rust's features.
+A showcase of Rust features.
 
-### Host Manager Demo
+### Host Manager
 
 A collection of command line network utilities.
 
@@ -15,7 +15,7 @@ A collection of command line network utilities.
 - ping
 - search_email
 
-* These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.
+**These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 
 #### fail2ban
 
@@ -107,7 +107,7 @@ cargo run --example sprite
 
 ### WHMCS Demo
 
-An example of calling an API and retrieving values. Showcases async calls and reading from an environment file.
+An example of calling the WHMCS billing API and retrieving product values. Showcases async calls and reading from an environment file.
 
 #### Setting up the WHMCS Demo
 
