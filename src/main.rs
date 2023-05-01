@@ -13,6 +13,8 @@ use std::io::{BufRead, BufReader}; // File search and replace
 use std::path::Path;
 use std::process::Command;
 use regex::Regex;
+use prettytable::{Table, Row, Cell};
+use prettytable::format;
 
 fn convert_bytes(bytes: u64) -> String {
     if bytes < 1024 {
@@ -268,6 +270,27 @@ fn sine_cosine() {
     }
 }
 
+fn table_formatting() {
+    let mut table = Table::new();
+
+    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+
+    table.add_row(Row::new(vec![
+        Cell::new("ID").style_spec("FwB"),
+        Cell::new("Name").style_spec("FwB"),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("1"),
+        Cell::new("Joe"),
+    ]));
+    table.add_row(Row::new(vec![
+        Cell::new("2"),
+        Cell::new("Pete"),
+    ]));
+
+    table.printstd();   
+}
+
 fn text_file_creation() {
     let mut file = File::create("assets/vhost.example.conf").unwrap();
 
@@ -281,7 +304,7 @@ fn text_file_creation() {
 }
 
 fn wait() {
-    println!("\nPress enter to continue...\n");
+    println!("\nPress enter to continue..");
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
 }
@@ -292,8 +315,11 @@ fn wait() {
 fn main() -> io::Result<()>{
     println!("Hello, world!");
 
+    table_formatting();
+    wait();
+
     disk_space();
-    println!("This is your disk size ^^^");    
+    println!("^^^ This is your disk size ^^^");    
     wait();
 
     let result = mysql_read_users_table();
@@ -306,7 +332,7 @@ fn main() -> io::Result<()>{
     wait();
 
     directory_listing();
-    println!("Here is `ls -la` output ^^^\n");
+    println!("^^^ Here is `ls -la` output ^^^\n");
         
     println!("Next we're going to output the size of a directory:");  
     let path = "/home/eugene/code/hello_world_rust/assets";
@@ -321,23 +347,23 @@ fn main() -> io::Result<()>{
     let filename = "assets/vhost.example.conf";
     replace_file_content(search, replace, filename);
     print_file_contents(filename)?;
-    println!("A file was created and then search and replace took place ^^^\n");
+    println!("^^^ A file was created and then search and replace took place. ^^^\n");
 
     draw_line_on_surface();    
     wait();
 
     sine_cosine();    
-    println!("Above is the sine and consine graph.");
+    println!("Above is the sine and consine graph.\n");
 
-    println!("Next going to restart nginx. You can press escape to cancel.");
+    println!("Next we're going to restart nginx. You can press escape to cancel.");
     wait();
 
     linux_service_restart();
 
-    println!("Next there will be a menu.");
+    println!("\nNext there will be a menu.");
     wait();    
     menu();
 
-    Ok(()) // Return value required by main function
+    Ok(()) // Return value required by main function because it expects a io::Result<()>
     
 }

@@ -1,12 +1,14 @@
 use std::env;
 use std::process::Command;
 use regex::Regex;
+use sqlite::{Connection};
 
 // Define an enum to represent the possible commands
 enum Cmd {
     Fail2ban(String, String),
     Hostname,
     Ping(String),
+    ProcessList(String, Option<u16>, Option<String>),
     SearchEmail(String, String),    
 }
 
@@ -18,17 +20,37 @@ fn main() {
     // Parse the command and argument using a match statement
     let command = match command_str.as_str() {
         "fail2ban" => Cmd::Fail2ban(args[2].clone(), args[3].clone()),
+
         "hostname" => Cmd::Hostname,
+
         "ping" => Cmd::Ping(args[2].clone()),
+
+        "process_list" => {
+            if args.len() > 4 {
+                let port = args[3].parse::<u16>().ok();
+                let username = args[4].parse::<String>().ok();
+
+                Cmd::ProcessList(args[2].clone(), port, username)
+            } else if args.len() > 3 {
+                let port = args[3].parse::<u16>().ok();
+
+                Cmd::ProcessList(args[2].clone(), port, None)
+            } else {
+                Cmd::ProcessList(args[2].clone(), None, None)
+            }
+        }
+        
         "search_email" => Cmd::SearchEmail(args[2].clone(), args[3].clone()),        
+
         _ => {
             // If the command is not recognized, output an error message
             println!("Unrecognized command: {}", command_str);
             println!("List of commands:");
-            println!(" fail2ban <server> <ip_address>");
+            println!(" fail2ban <host> <ip_address>");
             println!(" hostname");
+            println!(" process_list <host> [port] [username]");
             println!(" ping <ip_address>");
-            println!(" search_email <server> <email>");
+            println!(" search_email <host> <email>");
             return;
         }
     };
@@ -37,6 +59,7 @@ fn main() {
     match command {
         Cmd::Fail2ban(server, ip_address) => fail2ban(server, ip_address),
         Cmd::Hostname => hostname(),
+        Cmd::ProcessList(server,port, username) => process_list(server, port, username),
         Cmd::Ping(ip_address) => ping(ip_address),
         Cmd::SearchEmail(server, email) => search_email(server, email),        
     }
@@ -58,14 +81,23 @@ fn fail2ban(server: String, ip_address: String) {
     // Convert the output to a string
     let output_string = String::from_utf8(output.stdout).unwrap();
 
+    let result: String;
+    
     // Search for the pattern in the output
     if let Some(index) = output_string.find(&format!("] Ban {}", ip_address)) {
         // Extract the time from the log file
         let time = &output_string[0..19];
+        result = format!("Time of ban: {} #{}", time, index);
         println!("Time of ban: {} #{}", time, index);
     } else {
+        result = String::from("Pattern not found");
         println!("Pattern not found");
     }
+
+    let command = format!("fail2ban=>{}=>{}", server, ip_address);
+    
+    store_operation2(command, result);
+
 }
 
 // Define a function to execute the hostname command
@@ -81,7 +113,36 @@ fn hostname() {
     println!("{}", hostname.trim_end());
 }
 
-// Define a function to execute the ping command with the given IP address
+// Get the number of processes running on a remote server
+fn process_list(server: String, port: Option<u16>, username: Option<String>) {  
+    // Construct the SSH command with optional port and username arguments
+    let mut ssh_command = Command::new("ssh");
+    
+    if let Some(username) = username {
+        ssh_command.arg(format!("{}@{}", username, server));
+    } else {
+        ssh_command.arg(format!("root@{}", server));        
+    }
+            
+    if let Some(port) = port {
+        ssh_command.arg("-p").arg(port.to_string());
+    }
+
+    ssh_command.arg("ps ax");
+
+    // Use SSH to execute the ps command on the remote server
+    let output = ssh_command.output().expect("failed to execute process");
+    // Process the output and count the number of lines
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let num_processes = stdout.lines().count() - 1; // Exclude the header line
+    let message = format!("{} processes running.", num_processes);
+
+    println!("{}", message);
+    
+    store_operation(ssh_command, message);
+}
+
+// Define a function to execute the ping command with an IP address and return average time
 fn ping(ip_address: String) {
     loop {
         // Run the ping command once and capture the avg output
@@ -106,7 +167,7 @@ fn search_email(server: String, email: String) {
     let output_string = search_email_ssh_command(server, &email);
     
     // If debug
-    //println!("Here is the output string:\n\n{}", output_string);
+    //println!("Here is the output string for search_email:\n\n{}", output_string);
         
     // From / To Events, output with recipient first so that's there's better formatting
     let re = Regex::new(r"^([A-Za-z]{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}).+from=(.+); receiver=(.+)").unwrap();    
@@ -137,7 +198,8 @@ fn search_email_ssh_command(server: String, email: &String) -> String {
     let ssh_command = format!("ssh root@{} -p22222 'egrep -i \"Pass.+mailfrom.+envelope-from.+{}|orig_to=<{}>\" /var/log/maillog'", server, email, email);
 
     // If debug
-    // println!("Global egrep regex to get all events:\n{}", ssh_command);
+    // println!("Global egrep regex to get all events:\n{}", ssh_command);    
+    dbg!(&ssh_command);
 
     // Run the SSH command and capture the output
     let output = Command::new("bash")
@@ -148,3 +210,39 @@ fn search_email_ssh_command(server: String, email: &String) -> String {
     
     return String::from_utf8(output.stdout).unwrap().to_lowercase();
 }
+
+fn store_operation(command: Command, output: String) {
+    let connection = Connection::open("history.db").unwrap();
+    
+    let query = format!("
+        CREATE TABLE IF NOT EXISTS history (
+            id INTEGER PRIMARY KEY, 
+            command TEXT NOT NULL,
+            output TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        INSERT INTO history ('command','output') VALUES ('{:?}','{:?}');
+        ", command, output);
+                
+    connection.execute(query).unwrap();    
+}
+
+fn store_operation2(command: String, output: String) {
+    let connection = Connection::open("history.db").unwrap();
+    
+    let query = format!("
+        CREATE TABLE IF NOT EXISTS history (
+            id INTEGER PRIMARY KEY, 
+            command TEXT NOT NULL,
+            output TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        INSERT INTO history ('command','output') VALUES ('{:?}','{:?}');
+        ", command, output);
+                
+    connection.execute(query).unwrap();    
+}
+
+
