@@ -69,7 +69,7 @@ Average ping time for 1.1.1.1 = 4.863 ms
 ^C
 ```
 
-Note: Press control-C to sto.
+Note: Pressing control-C will stop the ping.
 
 #### search_email
 
@@ -77,7 +77,7 @@ Note: Press control-C to sto.
 cargo run --example hostman search_email <server> <email>
 ```
 
-Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
+Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first filter `pass` events and then show local [Postfix que manager](https://www.postfix.org/qmgr.8.html) deliveries.
 
 ### Main Demo
 
