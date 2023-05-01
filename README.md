@@ -25,6 +25,12 @@ cargo run --example hostman fail2ban <server> <ip_address>
 
 Check if an IP address has been listed by Fail2ban on a server.
 
+Output:
+
+```bash
+IP address A.B.C.D was banned at 2023-05-01 13:47:26
+```
+
 #### hostname
 
 ```bash
