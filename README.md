@@ -3,7 +3,7 @@
 
 ## About
 
-A showcase of Rust features. We have [host manager](#host-manager), [main demo](#main-demo), [sprite demo](#sprite-demo), and [WHMCS demo](#whmcs-demo).
+A showcase of Rust features. There is [host manager](#host-manager), [main demo](#main-demo), [sprite demo](#sprite-demo), and [WHMCS API demo](#whmcs-api-demo).
 
 ### Host Manager
 
@@ -105,7 +105,7 @@ A sprite animation [example](https://github.com/PistonDevelopers/piston-examples
 cargo run --example sprite
 ```
 
-### WHMCS Demo
+### WHMCS API Demo
 
 An example of calling the WHMCS billing API and retrieving product values. Showcases async calls and reading from an environment file.
 
