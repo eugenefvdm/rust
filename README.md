@@ -55,7 +55,7 @@ cargo run --example hostman ping 1.1.1.1
 cargo run --example hostman search_email <server> <email>
 ```
 
-- Search a server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
+- Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first present `pass` events and then local Postfix quemanager deliveries.
 
 ### Main Demo
 
