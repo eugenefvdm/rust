@@ -3,7 +3,7 @@
 
 ## About
 
-A showcase of Rust features.
+A showcase of Rust features. So far we have [host manager](#host-manager), [main demo](#main-demo), [sprite-demo](#sprite), and [WHMCS Demo](#whmcs-demo).
 
 ### Host Manager
 
