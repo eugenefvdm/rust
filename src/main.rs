@@ -15,6 +15,8 @@ use std::process::Command;
 use regex::Regex;
 use prettytable::{Table, Row, Cell};
 use prettytable::format;
+use std::thread;
+use std::time::Duration; // Also used by threads
 
 fn convert_bytes(bytes: u64) -> String {
     if bytes < 1024 {
@@ -303,6 +305,26 @@ fn text_file_creation() {
     write!(file, "{}ServerAlias webmail.example.com\n", indentation).unwrap();  
 }
 
+/*
+    Basic thread example that includes handle.join() to wait for the thread to finish.
+ */
+fn threads() {    
+    let handle= thread::spawn(|| {
+        for i in 1..4 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..3 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap();
+}
+
+
 fn wait() {
     println!("\nPress enter to continue..");
     let mut input = String::new();
@@ -313,7 +335,10 @@ fn wait() {
     Main entry point to the application.
 */
 fn main() -> io::Result<()>{
-    println!("Hello, world!");
+    println!("Hello, world!\n");
+
+    threads();
+    wait();
 
     table_formatting();
     wait();

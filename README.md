@@ -84,6 +84,7 @@ Search a remote Postfix server for all emails going TO a person housed on that s
 This is a sequential demo that will run through all the below bullet items one by one. There is a pause in between to see output.
 
 - Prints Hello, world!
+- Outputs threads
 - Prints a pretty table using [`prettytable`](https://github.com/phsym/prettytable-rs)
 - Reads a [`MySQL`](https://en.wikipedia.org/wiki/MySQL) table called `users`
 - Gets [`nginx`](https://en.wikipedia.org/wiki/Nginx) service status
