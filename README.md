@@ -11,11 +11,11 @@ A collection of command line network utilities.
 
 - [fail2ban*](#fail2ban)
 - [history](#history)
-- [hostname](#hostname)
+- [hostname*](#hostname)
 - [process_list*](#process_list)
-- [ping](#ping)
+- [ping*](#ping)
 - [search_email](#search_email)
-- [search_email_log](#search_email_log)
+- [search_email_log*](#search_email_log)
 
 **These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 

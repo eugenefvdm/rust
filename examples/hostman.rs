@@ -154,20 +154,18 @@ fn history() {
 
 }
 
-// Define a function to execute the hostname command
-fn hostname() {
-    // Get the hostname using the hostname command
+// Get the local hostname using the hostname command and store it in the database
+fn hostname() {    
     let output = Command::new("hostname")
             .arg("--fqdn")
             .output()
             .expect("failed to execute process");
-    let hostname = String::from_utf8_lossy(&output.stdout);
+        
+    let hostname = String::from_utf8_lossy(&output.stdout).trim_end().to_string();
+    
+    println!("{}", hostname);
 
-    // Output the hostname
-    println!("{}", hostname.trim_end());
-
-    // Return the hostname
-    // hostname.trim_end().to_string()
+    store("hostname".to_string(), hostname);
 }
 
 // Get the number of processes running on a remote server
@@ -270,7 +268,7 @@ fn search_email_log(server: String, ip_address: String) {
     // println!("{}", num_strings);
 
     let result;
-    
+
     if num_strings > 0 {
         let re = Regex::new(r"^\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}").unwrap();
 
