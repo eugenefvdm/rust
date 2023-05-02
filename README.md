@@ -95,7 +95,7 @@ Search a remote [Postfix](https://en.wikipedia.org/wiki/Postfix_(software)) serv
 cargo run --example hostman search_email_log <server> <ip_address>
 ```
 
-This will search a remote `Postfix` server for occurances of Dovecot `imap-login` and `auth failed` on <ip_address> and report the first time this happened.
+This will search a remote `Postfix` server's log file for occurances of Dovecot `imap-login` and `auth failed` on `<ip_address>` and report the first time this happened.
 
 ### Main Demo
 
