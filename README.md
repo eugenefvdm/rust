@@ -10,7 +10,7 @@ A showcase of Rust features. There is [host manager](#host-manager), [main demo]
 A collection of command line network utilities.
 
 - [fail2ban*](#fail2ban)
-- [history](#hostname)
+- [history](#history)
 - [hostname](#hostname)
 - [process_list*](#process_list)
 - [ping](#ping)
