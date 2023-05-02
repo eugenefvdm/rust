@@ -10,6 +10,7 @@ A showcase of Rust features. There is [host manager](#host-manager), [main demo]
 A collection of command line network utilities.
 
 - [fail2ban*](#fail2ban)
+- [history](#hostname)
 - [hostname](#hostname)
 - [process_list*](#process_list)
 - [ping](#ping)
@@ -23,11 +24,19 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-Check if an IP address has been listed by Fail2ban on a server. Output:
+Check if an IP address has been listed by Fail2ban on a server. Example:
 
 ```bash
 IP address A.B.C.D was banned at 2023-05-01 13:47:26
 ```
+
+#### history
+
+```bash
+cargo run --example hostman history
+```
+
+Output the history table.
 
 #### hostname
 
@@ -35,7 +44,7 @@ IP address A.B.C.D was banned at 2023-05-01 13:47:26
 cargo run --example hostman hostname
 ```
 
-Output the current hostname in fully qualified domain name format. Output:
+Output the current hostname in fully qualified domain name format. Example:
 
 ```bash
 user-laptop.example.com
@@ -47,7 +56,7 @@ user-laptop.example.com
 cargo run -- process_list <host> [port] [username]
 ```
 
-Show then number of processes running on a remote server. Output:
+Show then number of processes running on a remote server. Example:
 
 ```bash
 1256 processes running.
@@ -59,7 +68,7 @@ Show then number of processes running on a remote server. Output:
 cargo run --example hostman ping 1.1.1.1
 ```
 
-Continiously ping a remote host with 2 counts and show the average time taken to reply. Output:
+Continiously ping a remote host with 2 counts and show the average time taken to reply. Example:
 
 ```bash
 Average ping time for 1.1.1.1 = 4.738 ms
@@ -69,7 +78,7 @@ Average ping time for 1.1.1.1 = 4.863 ms
 ^C
 ```
 
-Note: Pressing control-C will stop the ping.
+Pressing control-C will stop the ping.
 
 #### search_email
 
