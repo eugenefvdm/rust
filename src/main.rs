@@ -17,18 +17,7 @@ use prettytable::{Table, Row, Cell};
 use prettytable::format;
 use std::thread;
 use std::time::Duration; // Also used by threads
-
-fn convert_bytes(bytes: u64) -> String {
-    if bytes < 1024 {
-        format!("{}B", bytes)
-    } else if bytes < 1024 * 1024 {
-        format!("{:.1}K", bytes as f64 / 1024.0)
-    } else if bytes < 1024 * 1024 * 1024 {
-        format!("{:.1}M", bytes as f64 / (1024.0 * 1024.0))
-    } else {
-        format!("{:.1}G", bytes as f64 / (1024.0 * 1024.0 * 1024.0))
-    }
-}
+use math::convert_bytes;
 
 fn directory_listing() {
     let output = Command::new("ls")
@@ -272,7 +261,7 @@ fn sine_cosine() {
     }
 }
 
-// Table formatting using prettiertable
+// Using prettiertable
 fn table_formatting() {
     let mut table = Table::new();
 
@@ -361,7 +350,7 @@ fn main() -> io::Result<()>{
     println!("^^^ Here is `ls -la` output ^^^\n");
         
     println!("Next we're going to output the size of a directory:");  
-    let path = "/home/eugene/code/hello_world_rust/assets";
+    let path = "assets";
     let result = read_disk_space(path);    
     println!("Size of {:?} is {} bytes", path, result.unwrap());    
     wait();    

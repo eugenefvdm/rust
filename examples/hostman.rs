@@ -13,7 +13,7 @@ enum Cmd {
     Ping(String),
     ProcessList(String, Option<u16>, Option<String>),
     SearchEmail(String, String),
-    SearchEmailLog(String, String),
+    SearchEmailLog(String, String),    
 }
 
 fn main() {
@@ -24,13 +24,9 @@ fn main() {
     // Parse the command and argument using a match statement
     let command = match command_str.as_str() {
         "fail2ban" => Cmd::Fail2ban(args[2].clone(), args[3].clone()),
-
         "history" => Cmd::History,
-
         "hostname" => Cmd::Hostname,
-
         "ping" => Cmd::Ping(args[2].clone()),
-
         "process_list" => {
             if args.len() > 4 {
                 let port = args[3].parse::<u16>().ok();
@@ -44,12 +40,9 @@ fn main() {
             } else {
                 Cmd::ProcessList(args[2].clone(), None, None)
             }
-        }
-        
+        }    
         "search_email" => Cmd::SearchEmail(args[2].clone(), args[3].clone()),        
-
         "search_email_log" => Cmd::SearchEmailLog(args[2].clone(), args[3].clone()),        
-
         _ => {
             // If the command is not recognized, output an error message
             println!("Unrecognized command: {}", command_str);
@@ -73,7 +66,7 @@ fn main() {
         Cmd::ProcessList(server,port, username) => process_list(server, port, username),
         Cmd::Ping(ip_address) => ping(ip_address),
         Cmd::SearchEmail(server, email) => search_email(server, email),        
-        Cmd::SearchEmailLog(server, ip_address) => search_email_log(server, ip_address),
+        Cmd::SearchEmailLog(server, ip_address) => search_email_log(server, ip_address),        
     }
 }
 
@@ -160,7 +153,7 @@ fn hostname() {
             .arg("--fqdn")
             .output()
             .expect("failed to execute process");
-        
+
     let hostname = String::from_utf8_lossy(&output.stdout).trim_end().to_string();
     
     println!("{}", hostname);
@@ -321,6 +314,4 @@ fn store(command: String, output: String) {
                 
     connection.execute(query).unwrap();    
 }
-
-
 

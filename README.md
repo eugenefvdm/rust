@@ -1,9 +1,15 @@
-# Rust Demos
+# Rust Examples
 [![Rust build](https://github.com/eugenevdm/rust/actions/workflows/rust.yml/badge.svg)](https://github.com/eugenevdm/rust/actions/workflows/rust.yml)
 
 ## About
 
-A showcase of Rust features. There is [host manager](#host-manager), [main demo](#main-demo), [sprite demo](#sprite-demo), and [WHMCS API demo](#whmcs-api-demo).
+Examples of Rust in action.
+
+- [host manager](#host-manager)
+- [main demo](#main-demo)
+- [sprite demo](#sprite-demo)
+- [Virtualmin API](#virtualmin-api)
+- [WHMCS API](#whmcs-api).
 
 ### Host Manager
 
@@ -25,7 +31,7 @@ A collection of command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-Check if an IP address has been listed by Fail2ban on a server. Example:
+Check if an IP address has been listed by Fail2ban on a server. Example output:
 
 ```bash
 IP address A.B.C.D was banned at 2023-05-01 13:47:26
@@ -45,7 +51,7 @@ Output the history table.
 cargo run --example hostman hostname
 ```
 
-Output the current hostname in fully qualified domain name format. Example:
+Output the current hostname in fully qualified domain name format. Example output:
 
 ```bash
 user-laptop.example.com
@@ -57,7 +63,7 @@ user-laptop.example.com
 cargo run -- process_list <host> [port] [username]
 ```
 
-Show then number of processes running on a remote server. Example:
+Show then number of processes running on a remote server. Example output:
 
 ```bash
 1256 processes running.
@@ -69,7 +75,7 @@ Show then number of processes running on a remote server. Example:
 cargo run --example hostman ping 1.1.1.1
 ```
 
-Continiously ping a remote host with 2 counts and show the average time taken to reply. Example:
+Continiously ping a remote host with 2 counts and show the average time taken to reply. Example output:
 
 ```bash
 Average ping time for 1.1.1.1 = 4.738 ms
@@ -148,15 +154,41 @@ A sprite animation [example](https://github.com/PistonDevelopers/piston-examples
 cargo run --example sprite
 ```
 
-### WHMCS API Demo
+### Virtualmin API
+
+An example of calling the Virtualmin API and retrieving mailboxes sizes.
+
+#### Setting up the Virtualmin API
+
+Copy `.env.example` to `.env` and make sure you have filled in the environment variables for `VIRTUALMIN_USERNAME`, and `VIRTUALMIN_PASSWORD`.
+
+#### Virtualmin API Commands
+
+##### List-Users Output Demo
+
+```bash
+cargo run --example virtualmin demo list-users
+```
+
+`list-users` example JSON output intepretation from the Virtualmin API. Useful for studying JSON output format and result code.
+
+##### Get Mailbox Sizes
+
+```bash
+cargo run --example virtualmin mailboxes <domain> <server>
+```
+
+Use the Virtualmin Remote API to log into a remote <server> and retrieve all the <mailboxes> and sizes for a <domain>.
+
+### WHMCS API
 
 An example of calling the WHMCS billing API and retrieving product values. Showcases async calls and reading from an environment file.
 
-#### Setting up the WHMCS Demo
+#### Setting up the WHMCS API
 
 Copy `.env.example` to `.env` and make sure you have filled in the requisite values for `WHMCS_URL`, `WHMCS_IDENTIFIER`, and `WHMCS_SECRET`.
 
-#### Running the WHMCS Demo
+#### Running the WHMCS API
 
 ```bash
 cargo run --example whmcs
