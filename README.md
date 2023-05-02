@@ -3,13 +3,13 @@
 
 ## About
 
-Examples of Rust in action.
+Rust in action.
 
 - [host manager](#host-manager)
 - [main demo](#main-demo)
 - [sprite demo](#sprite-demo)
 - [Virtualmin API](#virtualmin-api)
-- [WHMCS API](#whmcs-api).
+- [WHMCS API](#whmcs-api)
 
 ### Host Manager
 
@@ -160,7 +160,7 @@ An example of calling the Virtualmin API and retrieving mailboxes sizes.
 
 #### Setting up the Virtualmin API
 
-Copy `.env.example` to `.env` and make sure you have filled in the environment variables for `VIRTUALMIN_USERNAME`, and `VIRTUALMIN_PASSWORD`.
+Copy `.env.example` to `.env` and make sure you have filled in the environment variables for `VIRTUALMIN_USERNAME` and `VIRTUALMIN_PASSWORD`.
 
 #### Virtualmin API Commands
 
@@ -186,7 +186,7 @@ An example of calling the WHMCS billing API and retrieving product values. Showc
 
 #### Setting up the WHMCS API
 
-Copy `.env.example` to `.env` and make sure you have filled in the requisite values for `WHMCS_URL`, `WHMCS_IDENTIFIER`, and `WHMCS_SECRET`.
+Copy `.env.example` to `.env` and make sure you have filled in the requisite values for `WHMCS_URL`, `WHMCS_IDENTIFIER` and `WHMCS_SECRET`.
 
 #### Running the WHMCS API
 
