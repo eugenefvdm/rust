@@ -12,7 +12,8 @@ enum Cmd {
     Hostname,
     Ping(String),
     ProcessList(String, Option<u16>, Option<String>),
-    SearchEmail(String, String),    
+    SearchEmail(String, String),
+    SearchEmailLog(String, String),
 }
 
 fn main() {
@@ -47,6 +48,8 @@ fn main() {
         
         "search_email" => Cmd::SearchEmail(args[2].clone(), args[3].clone()),        
 
+        "search_email_log" => Cmd::SearchEmailLog(args[2].clone(), args[3].clone()),        
+
         _ => {
             // If the command is not recognized, output an error message
             println!("Unrecognized command: {}", command_str);
@@ -57,6 +60,7 @@ fn main() {
             println!(" process_list <host> [port] [username]");
             println!(" ping <ip_address>");
             println!(" search_email <host> <email>");
+            println!(" search_email_log <host> <ip_address>");
             return;
         }
     };
@@ -69,6 +73,7 @@ fn main() {
         Cmd::ProcessList(server,port, username) => process_list(server, port, username),
         Cmd::Ping(ip_address) => ping(ip_address),
         Cmd::SearchEmail(server, email) => search_email(server, email),        
+        Cmd::SearchEmailLog(server, ip_address) => search_email_log(server, ip_address),
     }
 }
 
@@ -94,7 +99,7 @@ fn fail2ban(server: String, ip_address: String) {
     if let Some(_index) = output_string.find(&format!("] Ban {}", ip_address)) {
         // Extract the time from the log file characters 0 through 19
         let time = &output_string[0..19];
-        result = format!("IP address {} was banned at {}", ip_address, time);
+        result = format!("{} was banned {}", ip_address, time);
         println!("{}", result);
     } else {
         result = String::from("Pattern not found");
@@ -103,7 +108,7 @@ fn fail2ban(server: String, ip_address: String) {
 
     let command = format!("fail2ban=>{}=>{}", server, ip_address);
     
-    store_operation(command, result);
+    store(command, result);
 
 }
 
@@ -113,7 +118,7 @@ fn history() {
     // Connect to the database
     let connection = sqlite::open("history.db").unwrap();
 
-    let query = "SELECT id, command, output, created_at, updated_at FROM history ORDER BY created_at DESC";
+    let query = "SELECT id, command, output, created_at, updated_at FROM history ORDER BY created_at ASC";
     
     // Create a new table
     let mut table = Table::new();
@@ -191,9 +196,9 @@ fn process_list(server: String, port: Option<u16>, username: Option<String>) {
 
     println!("{}", message);
 
-    let ssh_command_string = format!("{:?}", ssh_command);
+    let command = format!("ps ax on {:?}", server);
 
-    store_operation(ssh_command_string, message);
+    store(command, message);
 }
 
 // Execute ping in a loop and output average time
@@ -201,7 +206,7 @@ fn ping(ip_address: String) {
     let mut count = 0;
 
     loop {
-        // Run the ping command once and capture the avg output
+        // Run the ping command twice and capture the avg output
         let output = Command::new("ping")
             .arg("-c")
             .arg("2")
@@ -211,32 +216,32 @@ fn ping(ip_address: String) {
 
         // Parse the output to extract the average time in milliseconds
         let output_str = String::from_utf8_lossy(&output.stdout);
-        let time_index = output_str.find("rtt min/avg/max/mdev = ").unwrap() + 24;
-        let time_str = &output_str[time_index + 5..time_index + 10];
-        let time_ms = time_str.parse::<f32>().expect("Didn't receive valid output from the ping command");
-        
-        println!("Average ping time for {} = {} ms", ip_address, time_ms);
+                        
+        let re = Regex::new(r"rtt min/avg/max/mdev = [\d.]+/([\d.]+)/[\d.]+/[\d.]+ ms").unwrap();
 
+        let average = re.captures(&output_str).unwrap().get(1).unwrap().as_str();
+
+        println!("ping {}=>{} ms", ip_address, average);
+        
         count += 1;
 
         if count == 1 {
-            store_operation(format!("ping=>{}", ip_address), format!("{} ms", time_ms));
+            store(format!("ping=>{}", ip_address), format!("{} ms", average));
         }
     }
 }
 
 fn search_email(server: String, email: String) {           
-    let output_string = search_email_ssh_command(server, &email);
-    
-    // If debug
-    //println!("Here is the output string for search_email:\n\n{}", output_string);
-        
-    // From / To Events, output with recipient first so that's there's better formatting
+    let output_string = ssh_command(&server, &email);
+            
+    // from= and receiver= events
     let re = Regex::new(r"^([A-Za-z]{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}).+from=(.+); receiver=(.+)").unwrap();    
+
     let mut total = 0;    
+
     for line in output_string.lines() {
         if let Some(capture) = re.captures(line) {
-            println!("{} {} {}", &capture[1], &capture[3], &capture[2]);
+            println!("{} {} {}", &capture[1], &capture[3], &capture[2]); // swap receiver for better formatting
             total += 1;
         }
     }
@@ -255,9 +260,38 @@ fn search_email(server: String, email: String) {
 
 }
 
-fn search_email_ssh_command(server: String, email: &String) -> String {
+fn search_email_log(server: String, ip_address: String) {    
+    let shell_cmd = format!("cat /var/log/maillog | egrep \".+imap-login.+auth failed.+{}\"", ip_address);
+
+    let output_string = ssh_command(&server, &shell_cmd);
+    
+    let num_strings = output_string.lines().count();
+
+    // println!("{}", num_strings);
+
+    let result;
+    
+    if num_strings > 0 {
+        let re = Regex::new(r"^\w{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}").unwrap();
+
+        let matched = re.find(&output_string).unwrap();
+
+        result = format!("{} IMAP failures from {}, the earliest being {}", num_strings, ip_address, matched.as_str());
+    } else {
+        result = format!("No IMAP failed logins from {}.", ip_address);
+    }
+
+    println!("{}", result);
+
+    store(format!("Check IMAP failures on {} for {}", server, ip_address), result);
+}
+
+// fn ssh_command(server: String, email: &String) -> String {
+fn ssh_command(server: &String, command: &String) -> String {
     // Set up the global SSH command
-    let ssh_command = format!("ssh root@{} -p22222 'egrep -i \"Pass.+mailfrom.+envelope-from.+{}|orig_to=<{}>\" /var/log/maillog'", server, email, email);
+
+    let ssh_command = format!("ssh root@{} -p22222 '{}'", server, command);
+    // let ssh_command = format!("ssh root@{} -p22222 'egrep -i \"Pass.+mailfrom.+envelope-from.+{}|orig_to=<{}>\" /var/log/maillog'", server, email, email);
 
     // If debug
     // println!("Global egrep regex to get all events:\n{}", ssh_command);    
@@ -273,7 +307,7 @@ fn search_email_ssh_command(server: String, email: &String) -> String {
     return String::from_utf8(output.stdout).unwrap().to_lowercase();
 }
 
-fn store_operation(command: String, output: String) {
+fn store(command: String, output: String) {
     let connection = Connection::open("history.db").unwrap();
     
     let query = format!("

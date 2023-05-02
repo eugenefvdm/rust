@@ -15,6 +15,7 @@ A collection of command line network utilities.
 - [process_list*](#process_list)
 - [ping](#ping)
 - [search_email](#search_email)
+- [search_email_log](#search_email_log)
 
 **These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 
@@ -86,7 +87,15 @@ Pressing control-C will stop the ping.
 cargo run --example hostman search_email <server> <email>
 ```
 
-Search a remote Postfix server for all emails going TO a person housed on that server. This utility will first filter `pass` events and then show local [Postfix que manager](https://www.postfix.org/qmgr.8.html) deliveries.
+Search a remote [Postfix](https://en.wikipedia.org/wiki/Postfix_(software)) server for all emails going TO a person housed on that server. This utility will first filter `pass` events and then show local [Postfix que manager](https://www.postfix.org/qmgr.8.html) deliveries.
+
+#### search_email_log
+
+```bash
+cargo run --example hostman search_email_log <server> <ip_address>
+```
+
+This will search a remote `Postfix` server for occurances of Dovecot `imap-login` and `auth failed` on <ip_address> and report the first time this happened.
 
 ### Main Demo
 
