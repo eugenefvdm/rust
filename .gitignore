@@ -2,5 +2,6 @@
 vhost.example.conf
 .env
 history.db
+/lib/math/target
 
 
