@@ -87,7 +87,7 @@ Pressing control-C will stop the ping.
 cargo run --example hostman search_email <server> <email>
 ```
 
-Search a remote [Postfix](https://en.wikipedia.org/wiki/Postfix_(software)) server for all emails going TO a person housed on that server. This utility will first filter `pass` events and then show local [Postfix que manager](https://www.postfix.org/qmgr.8.html) deliveries.
+Search a remote [`Postfix`](https://en.wikipedia.org/wiki/Postfix_(software)) server for all emails going TO a person housed on that server. This utility will first filter `pass` events and then show local [`qmgr`](https://www.postfix.org/qmgr.8.html) deliveries.
 
 #### search_email_log
 
