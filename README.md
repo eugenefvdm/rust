@@ -196,7 +196,7 @@ cargo run --example whmcs
 
 ## Installation
 
-For the [`Systemd`](https://https://en.wikipedia.org/wiki/Systemd) utilities to work, do this:
+For the `Systemd` utilities to work, do this:
 
 ```bash
 sudo apt-get install libsystemd-dev
