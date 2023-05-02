@@ -1,11 +1,14 @@
 use std::env;
 use std::process::Command;
 use regex::Regex;
+use prettytable::{Table, Row, Cell};
+use prettytable::format;
 use sqlite::{Connection};
 
 // Define an enum to represent the possible commands
 enum Cmd {
     Fail2ban(String, String),
+    History,
     Hostname,
     Ping(String),
     ProcessList(String, Option<u16>, Option<String>),
@@ -20,6 +23,8 @@ fn main() {
     // Parse the command and argument using a match statement
     let command = match command_str.as_str() {
         "fail2ban" => Cmd::Fail2ban(args[2].clone(), args[3].clone()),
+
+        "history" => Cmd::History,
 
         "hostname" => Cmd::Hostname,
 
@@ -47,6 +52,7 @@ fn main() {
             println!("Unrecognized command: {}", command_str);
             println!("List of commands:");
             println!(" fail2ban <host> <ip_address>");
+            println!(" history");
             println!(" hostname");
             println!(" process_list <host> [port] [username]");
             println!(" ping <ip_address>");
@@ -58,6 +64,7 @@ fn main() {
     // Execute the appropriate command based on the parsed command
     match command {
         Cmd::Fail2ban(server, ip_address) => fail2ban(server, ip_address),
+        Cmd::History => history(),
         Cmd::Hostname => hostname(),
         Cmd::ProcessList(server,port, username) => process_list(server, port, username),
         Cmd::Ping(ip_address) => ping(ip_address),
@@ -96,7 +103,49 @@ fn fail2ban(server: String, ip_address: String) {
 
     let command = format!("fail2ban=>{}=>{}", server, ip_address);
     
-    store_operation2(command, result);
+    store_operation(command, result);
+
+}
+
+// Output the SQLite history table
+// TODO having trouble converting the ID be accepted 
+fn history() {
+    // Connect to the database
+    let connection = sqlite::open("history.db").unwrap();
+
+    let query = "SELECT id, command, output, created_at, updated_at FROM history ORDER BY created_at DESC";
+    
+    // Create a new table
+    let mut table = Table::new();
+
+    table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
+    
+    // Add headers to the table
+    table.add_row(Row::new(vec![
+        // Cell::new("ID").style_spec("FwB"),
+        Cell::new("Command").style_spec("FwB"),
+        Cell::new("Output").style_spec("FwB"),
+        Cell::new("Created At").style_spec("FwB"),
+        Cell::new("Updated At").style_spec("FwB"),
+    ]));
+
+    for row in connection
+        .prepare(query)
+        .unwrap()
+        .into_iter()        
+        .map(|row| row.unwrap())
+        {
+            table.add_row(Row::new(vec![
+                // Cell::new(row.read::<&i64, _>("id")),
+                Cell::new(row.read::<&str, _>("command")),
+                Cell::new(row.read::<&str, _>("output")),
+                Cell::new(row.read::<&str, _>("created_at")),
+                Cell::new(row.read::<&str, _>("updated_at")),
+            ]));            
+        }
+
+    // Print the table to the console
+    table.printstd();
 
 }
 
@@ -111,6 +160,9 @@ fn hostname() {
 
     // Output the hostname
     println!("{}", hostname.trim_end());
+
+    // Return the hostname
+    // hostname.trim_end().to_string()
 }
 
 // Get the number of processes running on a remote server
@@ -138,12 +190,16 @@ fn process_list(server: String, port: Option<u16>, username: Option<String>) {
     let message = format!("{} processes running.", num_processes);
 
     println!("{}", message);
-    
-    store_operation(ssh_command, message);
+
+    let ssh_command_string = format!("{:?}", ssh_command);
+
+    store_operation(ssh_command_string, message);
 }
 
-// Define a function to execute the ping command with an IP address and return average time
+// Execute ping in a loop and output average time
 fn ping(ip_address: String) {
+    let mut count = 0;
+
     loop {
         // Run the ping command once and capture the avg output
         let output = Command::new("ping")
@@ -157,9 +213,15 @@ fn ping(ip_address: String) {
         let output_str = String::from_utf8_lossy(&output.stdout);
         let time_index = output_str.find("rtt min/avg/max/mdev = ").unwrap() + 24;
         let time_str = &output_str[time_index + 5..time_index + 10];
-        let time_ms = time_str.parse::<f32>().unwrap();
+        let time_ms = time_str.parse::<f32>().expect("Didn't receive valid output from the ping command");
         
         println!("Average ping time for {} = {} ms", ip_address, time_ms);
+
+        count += 1;
+
+        if count == 1 {
+            store_operation(format!("ping=>{}", ip_address), format!("{} ms", time_ms));
+        }
     }
 }
 
@@ -211,7 +273,7 @@ fn search_email_ssh_command(server: String, email: &String) -> String {
     return String::from_utf8(output.stdout).unwrap().to_lowercase();
 }
 
-fn store_operation(command: Command, output: String) {
+fn store_operation(command: String, output: String) {
     let connection = Connection::open("history.db").unwrap();
     
     let query = format!("
@@ -228,21 +290,5 @@ fn store_operation(command: Command, output: String) {
     connection.execute(query).unwrap();    
 }
 
-fn store_operation2(command: String, output: String) {
-    let connection = Connection::open("history.db").unwrap();
-    
-    let query = format!("
-        CREATE TABLE IF NOT EXISTS history (
-            id INTEGER PRIMARY KEY, 
-            command TEXT NOT NULL,
-            output TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-        INSERT INTO history ('command','output') VALUES ('{:?}','{:?}');
-        ", command, output);
-                
-    connection.execute(query).unwrap();    
-}
 
 

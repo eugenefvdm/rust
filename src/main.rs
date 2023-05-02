@@ -272,6 +272,7 @@ fn sine_cosine() {
     }
 }
 
+// Table formatting using prettiertable
 fn table_formatting() {
     let mut table = Table::new();
 

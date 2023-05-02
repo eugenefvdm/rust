@@ -34,7 +34,7 @@ tokio = { version = "1.14.0", features = ["full"] }
 # Mocking of APIs
 serde_json = "1.0.64"
 # Storage of hostman commands for audits
-#rusqlite = "0.29"
-#sqlite3 = "0.24.0"
+# rusqlite = "0.29"
+# sqlite3 = "0.24.0"
 sqlite = "0.30.4"
 prettytable = "0.10.0"
