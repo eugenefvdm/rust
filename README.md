@@ -32,7 +32,7 @@ Command line network utilities.
 cargo run --example hostman fail2ban <server> <ip_address>
 ```
 
-Check if an IP address has been listed by Fail2ban on a server. Example output:
+Check if an IP address has been listed by [Fail2ban](https://en.wikipedia.org/wiki/Fail2ban) on a server. Example output:
 
 ```bash
 IP address A.B.C.D was banned at 2023-05-01 13:47:26
