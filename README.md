@@ -49,7 +49,8 @@ Look in a remote server's log file is there are any greylisting events based on 
 ```bash
 May  2 10:54:39 cp postfix/smtpd[1107910]: NOQUEUE: reject: RCPT from unknown[217.61.105.113]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
 May  2 17:06:02 cp postfix/smtpd[1238497]: NOQUEUE: reject: RCPT from qbmz.system-mail.elementor.com[223.165.112.109]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
-May  2 21:01:09 cp postfix/smtpd[1317830]: NOQUEUE: reject: RCPT from za-smtp-delivery-157.mimecast.co.za[41.74.201.157]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
+May  2 21:01:09 cp postfix/smtpd[1317830]: NOQUEUE: reject: RCPT from za-smtp-delivery-157.mimecast.co.za[41.74.201.157]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted<br>
+<br>
 3 greylisting events for '<pattern>'.
 ```
 
