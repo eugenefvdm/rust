@@ -110,7 +110,7 @@ fn fail2ban(server: String, ip_address: String) {
 }
 
 fn greylist(server: String, pattern: String) {       
-    let shell_cmd = format!("egrep -i -o .+{}.+greylisted /var/log/mail.log", pattern);
+    let shell_cmd = format!("egrep -i '.+{}.+greylisted.+from= ' /var/log/mail.log", pattern);
 
     let output_string = ssh(&server, &shell_cmd);
 
@@ -123,9 +123,9 @@ fn greylist(server: String, pattern: String) {
     let result;
 
     if num_strings > 0 {        
-        result = format!("{} greylisting events for {}.", num_strings, pattern);
+        result = format!("\n{} greylisting events for {}.", num_strings, pattern);
     } else {
-        result = format!("No greylisting events found on this pattern: '{}'.", pattern);
+        result = format!("\nNo greylisting events found on this pattern: '{}'.", pattern);
     }
 
     println!("{}", result);

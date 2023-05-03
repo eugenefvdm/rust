@@ -24,7 +24,7 @@ Command line network utilities.
 - [search_email](#search_email)
 - [search_email_log](#search_email_log)
 
-**Most commands store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
+**Most commands store output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 
 #### fail2ban
 
