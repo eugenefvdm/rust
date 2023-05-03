@@ -8,6 +8,7 @@ use sqlite::{Connection};
 // Define an enum to represent the possible commands
 enum Cmd {
     Fail2ban(String, String),
+    Greylist(String, String),
     History,
     Hostname,
     Ping(String),
@@ -24,6 +25,7 @@ fn main() {
     // Parse the command and argument using a match statement
     let command = match command_str.as_str() {
         "fail2ban" => Cmd::Fail2ban(args[2].clone(), args[3].clone()),
+        "greylist" => Cmd::Greylist(args[2].clone(), args[3].clone()),
         "history" => Cmd::History,
         "hostname" => Cmd::Hostname,
         "ping" => Cmd::Ping(args[2].clone()),
@@ -48,6 +50,7 @@ fn main() {
             println!("Unrecognized command: {}", command_str);
             println!("List of commands:");
             println!(" fail2ban <host> <ip_address>");
+            println!(" greylist <server> <pattern>");
             println!(" history");
             println!(" hostname");
             println!(" process_list <host> [port] [username]");
@@ -61,6 +64,7 @@ fn main() {
     // Execute the appropriate command based on the parsed command
     match command {
         Cmd::Fail2ban(server, ip_address) => fail2ban(server, ip_address),
+        Cmd::Greylist(server, pattern) => greylist(server, pattern),
         Cmd::History => history(),
         Cmd::Hostname => hostname(),
         Cmd::ProcessList(server,port, username) => process_list(server, port, username),
@@ -103,6 +107,30 @@ fn fail2ban(server: String, ip_address: String) {
     
     store(command, result);
 
+}
+
+fn greylist(server: String, pattern: String) {       
+    let shell_cmd = format!("egrep -i -o .+{}.+greylisted /var/log/mail.log", pattern);
+
+    let output_string = ssh(&server, &shell_cmd);
+
+    for line in output_string.lines() {
+        println!("{}", line);
+    }
+    
+    let num_strings = output_string.lines().count();
+    
+    let result;
+
+    if num_strings > 0 {        
+        result = format!("{} greylisting events for {}.", num_strings, pattern);
+    } else {
+        result = format!("No greylisting events found on this pattern: '{}'.", pattern);
+    }
+
+    println!("{}", result);
+
+    store(format!("Greylist check on {} for {}", server, pattern), result);
 }
 
 // Output the SQLite history table
@@ -222,10 +250,17 @@ fn ping(ip_address: String) {
     }
 }
 
-fn search_email(server: String, email: String) {           
-    let output_string = ssh_command(&server, &email);
+/*
+    First send a global egrep command to the server to extracts two types of patterns
+    Upon return of the actual results, iterate over them to see if certain lines
+    contain either the first pattern or the second pattern. Display results.
+ */
+fn search_email(server: String, email: String) {    
+    let main_egrep = format!("egrep -i \"Pass.+mailfrom.+envelope-from.+{}|orig_to=<{}>\" /var/log/maillog", email, email);
+
+    let output_string = ssh(&server, &main_egrep);
             
-    // from= and receiver= events
+    // from= and receiver= events    
     let re = Regex::new(r"^([A-Za-z]{3}\s+\d{1,2}\s\d{2}:\d{2}:\d{2}).+from=(.+); receiver=(.+)").unwrap();    
 
     let mut total = 0;    
@@ -251,14 +286,15 @@ fn search_email(server: String, email: String) {
 
 }
 
+/*
+    Search the email log file for IMAP login failures from a specific IP address
+ */
 fn search_email_log(server: String, ip_address: String) {    
     let shell_cmd = format!("cat /var/log/maillog | egrep \".+imap-login.+auth failed.+{}\"", ip_address);
 
-    let output_string = ssh_command(&server, &shell_cmd);
+    let output_string = ssh(&server, &shell_cmd);
     
     let num_strings = output_string.lines().count();
-
-    // println!("{}", num_strings);
 
     let result;
 
@@ -277,25 +313,19 @@ fn search_email_log(server: String, ip_address: String) {
     store(format!("Check IMAP failures on {} for {}", server, ip_address), result);
 }
 
-// fn ssh_command(server: String, email: &String) -> String {
-fn ssh_command(server: &String, command: &String) -> String {
-    // Set up the global SSH command
-
-    let ssh_command = format!("ssh root@{} -p22222 '{}'", server, command);
-    // let ssh_command = format!("ssh root@{} -p22222 'egrep -i \"Pass.+mailfrom.+envelope-from.+{}|orig_to=<{}>\" /var/log/maillog'", server, email, email);
-
-    // If debug
-    // println!("Global egrep regex to get all events:\n{}", ssh_command);    
-    dbg!(&ssh_command);
+fn ssh(server: &String, command: &String) -> String {
+    let command = format!("ssh root@{} -p22222 '{}'", server, command);
+    
+    dbg!(&command);
 
     // Run the SSH command and capture the output
     let output = Command::new("bash")
                          .arg("-c")
-                         .arg(&ssh_command)
+                         .arg(&command)
                          .output()
                          .expect("Failed to execute SSH command");
     
-    return String::from_utf8(output.stdout).unwrap().to_lowercase();
+    return String::from_utf8(output.stdout).unwrap();    
 }
 
 fn store(command: String, output: String) {

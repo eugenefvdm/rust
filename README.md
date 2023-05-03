@@ -3,7 +3,7 @@
 
 ## About
 
-Rust in action.
+Example Rust code to make the busy sysadmin happy.
 
 - [host manager](#host-manager)
 - [main demo](#main-demo)
@@ -13,17 +13,18 @@ Rust in action.
 
 ### Host Manager
 
-A collection of command line network utilities.
+Command line network utilities.
 
-- [fail2ban*](#fail2ban)
+- [fail2ban](#fail2ban)
+- [greylist](#greylist)
 - [history](#history)
-- [hostname*](#hostname)
-- [process_list*](#process_list)
-- [ping*](#ping)
+- [hostname](#hostname)
+- [process_list](#process_list)
+- [ping](#ping)
 - [search_email](#search_email)
-- [search_email_log*](#search_email_log)
+- [search_email_log](#search_email_log)
 
-**These utilities store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
+**Most commands store their output in a [SQLite](https://en.wikipedia.org/wiki/SQLite) database called `history.db`.*
 
 #### fail2ban
 
@@ -35,6 +36,21 @@ Check if an IP address has been listed by Fail2ban on a server. Example output:
 
 ```bash
 IP address A.B.C.D was banned at 2023-05-01 13:47:26
+```
+
+#### greylist
+
+```bash
+cargo run --example hostman greylist server.example.com <pattern>
+```
+
+Look in a remote server's log file is there are any greylisting events based on <pattern>. Example output:
+
+```bash
+May  2 10:54:39 cp postfix/smtpd[1107910]: NOQUEUE: reject: RCPT from unknown[217.61.105.113]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
+May  2 17:06:02 cp postfix/smtpd[1238497]: NOQUEUE: reject: RCPT from qbmz.system-mail.elementor.com[223.165.112.109]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
+May  2 21:01:09 cp postfix/smtpd[1317830]: NOQUEUE: reject: RCPT from za-smtp-delivery-157.mimecast.co.za[41.74.201.157]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
+3 greylisting events for '<pattern>'.
 ```
 
 #### history
