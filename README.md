@@ -44,7 +44,7 @@ IP address A.B.C.D was banned at 2023-05-01 13:47:26
 cargo run --example hostman greylist server.example.com <pattern>
 ```
 
-Look in a remote server's log file is there are any greylisting events based on <pattern>. Example output:
+Look in a remote server's log file is there are any greylisting events based on `<pattern>`. Example output:
 
 ```bash
 May  2 10:54:39 cp postfix/smtpd[1107910]: NOQUEUE: reject: RCPT from unknown[217.61.105.113]: 450 4.2.0 <user@example.com>: Recipient address rejected: Greylisted
