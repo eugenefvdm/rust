@@ -2,6 +2,10 @@
 
 All notable changes to `rust` will be documented here.
 
+# 04 May 2023
+
+- Refactored Virtualmin API function to make it more generic
+
 # 02 May 2023
 
 - First changelog

@@ -48,30 +48,42 @@ fn main() {
 
     // Execute the appropriate command based on the parsed command
     match command {        
-        Cmd::Mailboxes(domain, server) => mailboxes(domain, server),
+        Cmd::Mailboxes(server, domain) => mailboxes(server, domain),
         Cmd::Demo(command) => demo(command),
     }
     
 }
 
-fn mailboxes(domain: String, server: String) {
+/*
+    Calls the Virtualmin API to get a list of mailboxes for a domain and server
+
+    Usage:
+    virtualmin mailboxes <server> <domain>
+ */
+fn mailboxes(server: String, domain: String) {    
     let rt = Runtime::new().unwrap();
 
     rt.block_on(async {
-        match virtualmin_api(domain, server).await {
-            Ok(_) => println!("Success"),
+        match api(server, domain, "list-users".to_string()).await {
+            Ok(users) => {
+                println!("Success");
+
+                let _result = print_mailbox_sizes(users);
+            },
             Err(e) => println!("Error: {}", e),
         };
-    });            
+    });
 }
 
-async fn virtualmin_api(domain: String, server: String) -> Result<(), Box<dyn Error>> {
+async fn api(server: String, domain: String, program: String) -> Result<String, Box<dyn Error>> {
     dotenv().ok();
 
     let client = reqwest::Client::new();
 
     let url = 
-        format!("https://{}:10000/virtual-server/remote.cgi?program=list-users&domain={}&multiline&json=1", server, domain);
+        format!("https://{}:10000/virtual-server/remote.cgi?program={}&domain={}&multiline&json=1", server, program, domain);
+
+    println!("URL: {}", url);
     
     let res = client
         .get(url)
@@ -81,14 +93,8 @@ async fn virtualmin_api(domain: String, server: String) -> Result<(), Box<dyn Er
         )
         .send()
         .await?;
-
-    let body = res.text().await?;
         
-    // println!("{}", body);
-
-    deserialize_list_users(body)?;
-    
-    Ok(())
+    Ok(res.text().await?)
 }
 
 fn demo(command: String) {
@@ -128,11 +134,13 @@ fn list_users_demo() -> serde_json::Result<()> {
         "command": "list-users"
     }"#;
 
-    deserialize_list_users(json_str.to_string())
+    print_mailbox_sizes(json_str.to_string())
 
 }
-
-fn deserialize_list_users(json_str: String ) -> serde_json::Result<()> {    
+/*
+    Iterate through a list of Virtualmin users and get the username and mailbox size for each user
+ */
+fn print_mailbox_sizes(json_str: String ) -> serde_json::Result<()> {    
     let list_users_response: ListUsersResponse = serde_json::from_str(&json_str)?;
 
     for user in list_users_response.data {
