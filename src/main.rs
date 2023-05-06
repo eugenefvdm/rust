@@ -18,6 +18,8 @@ use prettytable::format;
 use std::thread;
 use std::time::Duration; // Also used by threads
 use math::convert_bytes;
+use security::{encrypt, decrypt};
+use std::str::from_utf8;
 
 fn directory_listing() {
     let output = Command::new("ls")
@@ -239,6 +241,116 @@ fn replace_file_content(search: &str, replace: &str, filename: &str)  {
         .expect("Could not write to file");
 }
 
+fn encrypt_decrypt() {
+    let data = "Hello, world!";
+    let password = "12345";
+
+    println!("Data to encrypt: \"{}\" and password: \"{}\"", &data, &password);
+
+    // println!("Encrypting now");
+    let res = encrypt(data.as_bytes(), password);
+    println!("Encrypted response: {}", res);
+
+    // println!("Decrypting the response");
+    let decrypted_bytes = decrypt(res.as_str(), password).unwrap();
+    let decrypted_string = from_utf8(&decrypted_bytes).unwrap();
+    println!("Decrypted response: {}", decrypted_string);
+}
+
+// Start of encryption / decryption functions
+// Original example from https://www.boringadv.com/2022/12/05/simple-encryption-in-rust/#comment-83
+// Refactored using ChatGPT
+
+///encrypt "data" using "password" as the password
+/// Output is [hexNonce]/[hexCipher]/[hexMac] (nonce and iv are the same thing)
+// pub fn encrypt(data: &[u8], password: &str) -> String {
+//     let key_size = crypto::aes::KeySize::KeySize128;
+
+//     //pad or truncate the key if necessary
+//     let valid_key = get_valid_key(password);
+//     let iv = get_iv(12); //initial vector (iv), also called a nonce
+//     let mut cipher = AesGcm::new(key_size, &valid_key, &iv, &[]);
+
+//     //create a vec of data.len 0's. This is where the encrypted data will be saved.
+//     //the encryption is performed in-place, so this vector of 0's will be converted
+//     //to the encrypted data
+//     let mut encrypted: Vec<u8> = repeat(0).take(data.len()).collect();
+
+//     //create a vec of 16 0's. This is for the mac. This library calls it a "tag", but it's really
+//     // the mac address. This vector will be modified in place, just like the "encrypted" vector
+//     // above
+//     let mut mac: Vec<u8> = repeat(0).take(16).collect();
+
+//     //encrypt data, put it into "encrypted"
+//     cipher.encrypt(data, &mut encrypted, &mut mac[..]);
+
+//     //create the output string that contains the nonce, cipher text, and mac
+//     let hex_iv = hex::encode(iv);
+//     let hex_cipher = hex::encode(encrypted);
+//     let hex_mac = hex::encode(mac);
+//     let output = format!("{}/{}/{}", hex_iv, hex_cipher, hex_mac);
+
+//     output
+// }
+
+// fn get_valid_key(key: &str) -> Vec<u8> {
+//     let mut bytes = key.as_bytes().to_vec();
+//     bytes.resize(16, 0x00);
+
+//     bytes
+// }
+
+// fn get_iv(size: usize) -> Vec<u8> {
+//     let mut iv = vec![0u8; size];
+//     rand::thread_rng().fill_bytes(&mut iv);
+
+//     iv
+// }
+
+// /// Decryption using AES-GCM 128
+// /// iv_data_mac is a string that contains the iv/nonce, data, and mac values. All these values
+// /// must be hex encoded, and separated by "/" i.e. [hex(iv)/hex(data)/hex(mac)]. This function decodes
+// /// the values. key (or password) is the raw (not hex encoded) password
+// pub fn decrypt(iv_data_mac: &str, key: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+//     let (iv, data, mac) = split_iv_data_mac(iv_data_mac)?;
+//     let key = get_valid_key(key);
+
+//     let key_size = crypto::aes::KeySize::KeySize128;
+
+//     // I don't use the aad for verification. aad isn't encrypted anyway, so it's just specified
+//     // as &[].
+//     let mut decipher = AesGcm::new(key_size, &key, &iv, &[]);
+
+//     // create a list where the decoded data will be saved. dst is transformed in place. It must be exactly the same
+//     // size as the encrypted data
+//     let mut dst: Vec<u8> = repeat(0).take(data.len()).collect();
+//     let _result = decipher.decrypt(&data, &mut dst, &mac);
+
+//     // if result { println!("Successful decryption"); }
+//     // println!("\nDecrypted {}", str::from_utf8(&dst).unwrap());
+
+//     Ok(dst)
+// }
+
+// /// orig must be a string of the form [hexNonce]/[hexCipherText]/[hexMac]. This
+// /// is the data returned from encrypt(). This function splits the data, removes
+// /// the hex encoding, and returns each as a list of bytes.
+// fn split_iv_data_mac(orig: &str) -> Result<(Vec<u8>, Vec<u8>, Vec<u8>), Box<dyn Error>> {
+//     let split: Vec<&str> = orig.split('/').collect();
+
+//     let iv = decode_hex(split[0])?;
+//     let data = decode_hex(split[1])?;
+//     let mac = decode_hex(split[2])?;
+
+//     Ok((iv, data, mac))
+// }
+
+// fn decode_hex(hex_str: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+//     hex::decode(hex_str).map_err(|_| Box::new(io::Error::from(ErrorKind::Other)) as Box<dyn Error>)
+// }
+
+// End of encryption / decryption functions
+
 // Sine Consine example variables    
 const WIDTH: i32 = 100;
 const HEIGHT: i32 = 50;
@@ -327,6 +439,9 @@ fn wait() {
 fn main() -> io::Result<()>{
     println!("Hello, world!\n");
 
+    encrypt_decrypt();
+    wait();
+    
     threads();
     wait();
 

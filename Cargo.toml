@@ -42,3 +42,13 @@ prettytable = "0.10.0"
 serde = { version = "1.0", features = ["derive"] }
 # Include a custom library
 math = { path = "lib/math" }
+# Lots of includes to get security working!
+security = { path = "lib/security" }
+hex = "0.4.3"
+# See https://www.boringadv.com/2022/12/05/simple-encryption-in-rust/
+rust-crypto = "0.2.36"
+rand = "0.8.5"
+rustc-serialize = "0.3.24"
+base64 = "0.21.0"
+aes = "0.8.2"
+# End of security includes

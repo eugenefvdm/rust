@@ -5,26 +5,9 @@ use std::env;
 use std::error::Error; // Used by the Async calls
 use tokio::runtime::Runtime; // Used by the Async calls
 
-#[derive(Debug, Deserialize)]
-struct User {
-    name: String,
-    values: UserValues,
-}
-
-#[derive(Debug, Deserialize)]
-struct UserValues {
-    home_byte_quota_used: Vec<String>,    
-}
-
-#[derive(Debug, Deserialize)]
-struct ListUsersResponse {
-    data: Vec<User>,
-    status: String,    
-}
-
-enum Cmd {    
+enum Cmd {        
     Demo(String),
-    Mailboxes(String, String),    
+    Mailboxes(String, String),
 }
 
 fn main() {
@@ -35,7 +18,9 @@ fn main() {
     // Parse the command and argument using a match statement
     let command = match command_str.as_str() {
         "demo" => Cmd::Demo(args[2].clone()),
+        
         "mailboxes" => Cmd::Mailboxes(args[2].clone(), args[3].clone()),
+
         _ => {
             // If the command is not recognized, output an error message
             println!("Unrecognized command: {}", command_str);
@@ -43,13 +28,14 @@ fn main() {
             println!(" demo list-users");
             println!(" mailboxes <domain> <server>");            
             return;
-        }
+        }        
     };
 
     // Execute the appropriate command based on the parsed command
     match command {        
-        Cmd::Mailboxes(server, domain) => mailboxes(server, domain),
         Cmd::Demo(command) => demo(command),
+        Cmd::Mailboxes(server, domain) => mailboxes(server, domain),
+        
     }
     
 }
@@ -102,6 +88,23 @@ fn demo(command: String) {
         "list-users" => list_users_demo().unwrap(),
         _ => println!("Unrecognized demo command: {}", command),
     }
+}
+
+#[derive(Debug, Deserialize)]
+struct User {
+    name: String,
+    values: UserValues,
+}
+
+#[derive(Debug, Deserialize)]
+struct UserValues {
+    home_byte_quota_used: Vec<String>,    
+}
+
+#[derive(Debug, Deserialize)]
+struct ListUsersResponse {
+    data: Vec<User>,
+    status: String,    
 }
 
 fn list_users_demo() -> serde_json::Result<()> {

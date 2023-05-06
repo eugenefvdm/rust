@@ -125,6 +125,7 @@ This will search a remote `Postfix` server's log file for occurances of Dovecot 
 This is a sequential demo that will run through all the below bullet items one by one. There is a pause in between to see output.
 
 - Prints Hello, world!
+- Encrypt and decrypts a string (Cypher demo)
 - Outputs threads
 - Prints a pretty table using [`prettytable`](https://github.com/phsym/prettytable-rs)
 - Reads a [`MySQL`](https://en.wikipedia.org/wiki/MySQL) table called `users`
@@ -151,14 +152,14 @@ or
 
 ```bash
 cargo build
-./target/debug/hello_world_rust
+./target/debug/hello_rust
 ```
 
 or
 
 ```bash
 cargo build --release
-./target/release/hello_world_rust
+./target/release/hello_rust
 ```
 
 ### Sprite Demo
